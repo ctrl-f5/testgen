@@ -1,0 +1,26 @@
+<?php
+
+namespace {{testClassNamespace}};
+
+use {{FQCN}};
+{{useStatements}}
+
+class {{testClassName}} extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var {{className}}
+     */
+    protected ${{classVarName}};
+
+    public function setup()
+    {
+        $this->{{classVarName}} = new {{className}}();
+    }
+
+    public function tearDown()
+    {
+        $this->{{classVarName}} = null;
+    }
+
+{{testMethods}}
+}

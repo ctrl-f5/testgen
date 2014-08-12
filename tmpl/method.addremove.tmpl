@@ -1,0 +1,15 @@
+    public function {{methodName}}()
+    {
+        $val_1 = new {{targetEntity}}();
+        $val_2 = new {{targetEntity}}();
+
+        $fluent = $this->{{classVarName}}->{{adder}}($val_1);
+        $this->assertSame($this->{{classVarName}}, $fluent);
+        $this->assertSame(1, $this->{{classVarName}}->{{getter}}()->count());
+
+        $this->{{classVarName}}->{{adder}}($val_2);
+        $this->assertSame(2, $this->{{classVarName}}->{{getter}}()->count());
+
+        $this->{{classVarName}}->{{remover}}($val_1);
+        $this->assertSame(1, $this->{{classVarName}}->{{getter}}()->count());
+    }
