@@ -20,6 +20,40 @@ class ClassInfo
         $this->reflectionClass = new \ReflectionClass($class);
     }
 
+    public static function createFromFile($classFile)
+    {
+        if (!file_exists($classFile)) throw new \RuntimeException('File does not exist: ' . $classFile);
+
+        $content = file_get_contents($classFile);
+
+        $namespace = '';
+        $className = '';
+        foreach (explode(PHP_EOL, $content) as $line) {
+            $line = trim($line);
+            if (strpos($line, 'namespace ') === 0) {
+                $namespace = str_replace(array('namespace ', ';'), array('', ''), $line);
+                continue;
+            }
+            if (strpos($line, 'class ') === 0) {
+                $line = trim($line, '{');
+                $pos2 = strpos($line, ' ', 6);
+                if ($pos2 === false) {
+                    $className = substr($line, 6);
+                } else {
+                    $className = substr($line, 6, $pos2 - 6);
+                }
+                break;
+            }
+        }
+
+        $fqcn = $namespace . '\\' . $className;
+        echo $fqcn . PHP_EOL;
+        die;
+        if (!class_exists($fqcn)) throw new \RuntimeException("class not found: " . $fqcn);
+
+        return new ClassInfo($fqcn);
+    }
+
     public function getProperties()
     {
         $props = array();

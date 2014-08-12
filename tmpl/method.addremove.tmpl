@@ -8,8 +8,12 @@
         $this->assertSame(1, $this->{{classVarName}}->{{getter}}()->count());
 
         $this->{{classVarName}}->{{adder}}($val_2);
-        $this->assertSame(2, $this->{{classVarName}}->{{getter}}()->count());
+        $this->assertEquals(true, $this->{{classVarName}}->{{getter}}() instanceof ArrayCollection);
+        $this->assertEquals(2, $this->{{classVarName}}->{{getter}}()->count());
+        $this->assertSame($val_1, $this->{{classVarName}}->{{getter}}()->get(0));
+        $this->assertSame($val_2, $this->{{classVarName}}->{{getter}}()->get(1));
 
         $this->{{classVarName}}->{{remover}}($val_1);
-        $this->assertSame(1, $this->{{classVarName}}->{{getter}}()->count());
+        $this->assertEquals(1, $this->{{classVarName}}->{{getter}}()->count());
+        $this->assertSame($val_2, $this->{{classVarName}}->{{getter}}()->get(1));
     }

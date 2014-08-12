@@ -15,16 +15,26 @@ class Processor
         $this->config = $config;
     }
 
-    public function processClass($class)
+    public function processClass($classFile)
     {
-        $info = new ClassInfo($class);
+        $info = ClassInfo::createFromFile($classFile);
 
         $generator = new Generator($this->config);
         $generator->generateTestClass($info);
     }
 
-    public function findTestClass($class)
+    public function processDirectory($directory)
     {
+        $dirs = scandir($directory);
 
+        foreach ($dirs as $node) {
+            if (substr($node, strlen($node) - 1) == '~') {
+                echo 'skipping tmp file: ' . $node . PHP_EOL;
+                continue;
+            }
+            $path = $directory . DIRECTORY_SEPARATOR . $node;
+            echo 'Processing: ' . $node . PHP_EOL;
+            if (is_file($path)) $this->processClass($path);
+        }
     }
 } 

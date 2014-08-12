@@ -22,5 +22,15 @@ class {{testClassName}} extends \PHPUnit_Framework_TestCase
         $this->{{classVarName}} = null;
     }
 
+    public function testCanConstruct()
+    {
+        return $this->markTestIncomplete('implementation missing');
+    }
+
+    public function testClassDefaults()
+    {
+        return $this->markTestIncomplete('implementation missing');
+    }
+
 {{testMethods}}
 }

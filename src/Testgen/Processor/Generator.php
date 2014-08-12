@@ -76,6 +76,7 @@ class Generator
                     break;
                 case 'string':
                 case 'str':
+                case 'text':
                     $values[] = '"my string"';
                     break;
                 case 'decimal':
@@ -85,6 +86,9 @@ class Generator
                 case 'bool':
                 case 'boolean':
                     $values[] = 'true';
+                    break;
+                case 'datetime':
+                    $values[] = 'new \\DateTime()';
                     break;
                 case 'array':
                     $values[] = 'array("test")';
@@ -125,9 +129,16 @@ class Generator
     protected function writeFile($path, $content)
     {
         if (file_exists($path) && !$this->config['override']) {
-            echo PHP_EOL . $content . PHP_EOL . PHP_EOL;
-            throw new \RuntimeException('File already exists: ' . $path . PHP_EOL . ' dumped generated content');
+            if ($this->config['exceptionOnExist']) {
+                echo PHP_EOL . $content . PHP_EOL . PHP_EOL;
+                throw new \RuntimeException('File already exists: ' . $path . PHP_EOL . ' dumped generated content');
+            }
+            echo 'File exists, skipping: ' . $path . PHP_EOL;
+            return;
         }
+
+        echo 'writing testfile: ('.strlen($content).')' . $path . PHP_EOL;
+
         file_put_contents($path, $content);
     }
 }

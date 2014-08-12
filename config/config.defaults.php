@@ -13,4 +13,8 @@ return array(
         )
     ),
     'override' => false, // override existing test files?
+    'exceptionOnExist' => true,
+    'baseClasses' => array(
+        '' => '\PHPUnit_Framework_TestCase',
+    ),
 );
