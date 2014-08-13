@@ -1,6 +1,7 @@
     public function {{methodName}}()
     {
-        $fluent = $this->{{classVarName}}->{{setter}}({{val_0}});
+        $var = {{val_0}};
+        $fluent = $this->{{classVarName}}->{{setter}}($var);
         $this->assertSame($this->{{classVarName}}, $fluent);
-        $this->assertEquals({{val_0}}, $this->{{classVarName}}->{{getter}}());
+        $this->assertSame($var, $this->{{classVarName}}->{{getter}}());
     }

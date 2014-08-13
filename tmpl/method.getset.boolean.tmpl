@@ -1,0 +1,10 @@
+    /**
+     * @dataProvider booleanTestDataProvider
+     */
+    public function {{methodName}}($in, $out)
+    {
+        $fluent = $this->{{classVarName}}->{{setter}}($in);
+        $this->assertSame($this->{{classVarName}}, $fluent);
+
+        $this->assertSame($out, $this->{{classVarName}}->{{getter}}());
+    }

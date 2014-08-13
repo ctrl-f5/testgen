@@ -10,8 +10,17 @@ $config = array_merge($defaultConfig, $userConfig);
 foreach ($config['autoload'] as $namespace => $path) $autoloader->addPsr4($namespace, $path);
 
 $argument = $argv[1];
+$flag = $argv[2];
+
+if ($flag == '--dump') {
+    $config['overrideAction'] = 'dump';
+}
+if ($flag == '--force') {
+    $config['overrideAction'] = 'force';
+}
 
 $processor = new \Testgen\Processor\Processor($config);
+
 if (is_file($argument)) {
     return $processor->processClass($argument);
 }

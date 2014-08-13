@@ -47,8 +47,7 @@ class ClassInfo
         }
 
         $fqcn = $namespace . '\\' . $className;
-        echo $fqcn . PHP_EOL;
-        die;
+
         if (!class_exists($fqcn)) throw new \RuntimeException("class not found: " . $fqcn);
 
         return new ClassInfo($fqcn);

@@ -37,6 +37,7 @@ class Generator
         }
 
         $uses = array();
+        $relations = array_unique($relations);
         foreach ($relations as $r) $uses[] = 'use ' . $r . ';';
 
         $vars['useStatements'] = implode(PHP_EOL, $uses);
@@ -85,7 +86,7 @@ class Generator
                     break;
                 case 'bool':
                 case 'boolean':
-                    $values[] = 'true';
+                    $tmpl = $this->config['templates']['method']['getset.boolean'];
                     break;
                 case 'datetime':
                     $values[] = 'new \\DateTime()';
@@ -128,17 +129,22 @@ class Generator
 
     protected function writeFile($path, $content)
     {
-        if (file_exists($path) && !$this->config['override']) {
+        if (file_exists($path) && (!$this->config['override'] || !$this->config['overrideAction'] == 'force')) {
             if ($this->config['exceptionOnExist']) {
                 echo PHP_EOL . $content . PHP_EOL . PHP_EOL;
                 throw new \RuntimeException('File already exists: ' . $path . PHP_EOL . ' dumped generated content');
             }
             echo 'File exists, skipping: ' . $path . PHP_EOL;
+
+            if ($this->config['overrideAction'] == 'dump') {
+                echo 'Dumping content: ' . PHP_EOL . $content . PHP_EOL;
+            }
+
             return;
         }
 
-        echo 'writing testfile: ('.strlen($content).')' . $path . PHP_EOL;
+        echo 'writing testfile: (' . strlen($content) . 'bytes) ' . $path . PHP_EOL;
 
-        file_put_contents($path, $content);
+        //file_put_contents($path, $content);
     }
 }
