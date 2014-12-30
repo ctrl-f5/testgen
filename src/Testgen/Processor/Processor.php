@@ -28,12 +28,13 @@ class Processor
         $dirs = scandir($directory);
 
         foreach ($dirs as $node) {
-            if (substr($node, strlen($node) - 1) == '~') {
-                echo 'skipping tmp file: ' . $node . PHP_EOL;
+            if ($node == '.' || $node == '..') continue;
+            if (substr($node, strlen($node) - 1) == '~' || $node[0] == '.') {
+                echo 'skipping tmp or hidden file: ' . $node . PHP_EOL;
                 continue;
             }
-            $path = $directory . DIRECTORY_SEPARATOR . $node;
-            echo 'Processing: ' . $node . PHP_EOL;
+            $path = realpath($directory . DIRECTORY_SEPARATOR . $node);
+            echo 'Processing: ' . $path . PHP_EOL;
             if (is_file($path)) $this->processClass($path);
         }
     }

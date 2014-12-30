@@ -9,8 +9,8 @@ $config = array_merge($defaultConfig, $userConfig);
 
 foreach ($config['autoload'] as $namespace => $path) $autoloader->addPsr4($namespace, $path);
 
-$argument = $argv[1];
-$flag = $argv[2];
+$argument = isset($argv[1]) ? $argv[1]: '';
+$flag = isset($argv[2]) ? $argv[2]: 0;
 
 if ($flag == '--dump') {
     $config['overrideAction'] = 'dump';
@@ -22,9 +22,11 @@ if ($flag == '--force') {
 $processor = new \Testgen\Processor\Processor($config);
 
 if (is_file($argument)) {
-    return $processor->processClass($argument);
+    $processor->processClass($argument);
+    return 0;
 }
 if (is_dir($argument)) {
-    return $processor->processDirectory($argument);
+    $processor->processDirectory($argument);
+    return 0;
 }
 echo 'Nothing to process' . PHP_EOL;

@@ -16,6 +16,7 @@ class Generator
     public function generateTestClass(ClassInfo $info)
     {
         $vars = array(
+            'baseClass' => $this->getBaseClass($info->getFQClassName()),
             'testClassNamespace' => $info->getTestNamespace(),
             'testClassName' => $info->getTestClassName(),
             'classNamespace' => $info->getNamespace(),
@@ -48,7 +49,7 @@ class Generator
             $vars
         );
 
-        $this->writeFile($info->getTestClassFile(), $class);
+        $this->writeFile($info->getTestClassFile($this->config['writeDir']), $class);
     }
 
     public function generateTestMethod($prop, $propConfig, $vars)
@@ -89,6 +90,7 @@ class Generator
                     $tmpl = $this->config['templates']['method']['getset.boolean'];
                     break;
                 case 'datetime':
+                case 'time':
                     $values[] = 'new \\DateTime()';
                     break;
                 case 'array':
@@ -127,6 +129,15 @@ class Generator
         return $template;
     }
 
+    public function getBaseClass($fqcn)
+    {
+        foreach ($this->config['baseClasses'] as $ns => $class) {
+            if (strpos($fqcn, $ns) === 0) return $class;
+        }
+
+        return $this->config['baseClasses'][''];
+    }
+
     protected function writeFile($path, $content)
     {
         if (file_exists($path) && (!$this->config['override'] || !$this->config['overrideAction'] == 'force')) {
@@ -145,6 +156,10 @@ class Generator
 
         echo 'writing testfile: (' . strlen($content) . 'bytes) ' . $path . PHP_EOL;
 
-        //file_put_contents($path, $content);
+        $dir = dirname($path);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        file_put_contents($path, $content);
     }
 }

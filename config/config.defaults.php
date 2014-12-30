@@ -19,4 +19,5 @@ return array(
     'baseClasses' => array(
         '' => '\PHPUnit_Framework_TestCase',
     ),
+    'writeDir' => false,
 );

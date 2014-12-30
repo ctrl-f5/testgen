@@ -34,13 +34,16 @@ class ClassInfo
                 $namespace = str_replace(array('namespace ', ';'), array('', ''), $line);
                 continue;
             }
-            if (strpos($line, 'class ') === 0) {
+            if (strpos($line, 'class ') === 0 || strpos($line, 'abstract class ') === 0) {
+                $trim = strpos($line, 'class ') === 0 ? 6: 15;
                 $line = trim($line, '{');
-                $pos2 = strpos($line, ' ', 6);
+                $line = substr($line, $trim);
+                $line = trim($line, ' ');
+                $pos2 = strpos($line, ' ');
                 if ($pos2 === false) {
-                    $className = substr($line, 6);
+                    $className = $line;
                 } else {
-                    $className = substr($line, 6, $pos2 - 6);
+                    $className = substr($line, 0, $pos2);
                 }
                 break;
             }
@@ -93,6 +96,7 @@ class ClassInfo
                         ',cascade={"remove","persist"}',
                         ',cascade={"persist"}',
                         ',cascade={"remove"}',
+                        'options={"default"="unknown"}',
                     ),
                     '',
                     $colConf
@@ -100,12 +104,18 @@ class ClassInfo
 
                 // parse ini
                 $ini = str_replace(',', PHP_EOL, $colConf);
-                $config = parse_ini_string($ini);
+                $config = @parse_ini_string($ini);
 
-                if ($relation) $config['type'] = $relation;
-                if (!isset($config['nullable'])) $config['nullable'] = false;
+                if ($config) {
 
-                $props[$prop->getName()] = $config;
+                    if ($relation) $config['type'] = $relation;
+                    if (!isset($config['nullable'])) $config['nullable'] = false;
+
+                    $props[$prop->getName()] = $config;
+
+                } else {
+                    echo sprintf('unknown property config for %s: %s%s', $prop->getName(), $ini, PHP_EOL);
+                }
             }
         }
 
@@ -144,12 +154,23 @@ class ClassInfo
         return lcfirst($this->getClassName());
     }
 
-    public function getTestClassFile()
+    public function isAbstract()
     {
+        return $this->reflectionClass->isAbstract();
+    }
+
+    public function getTestClassFile($baseDir = false)
+    {
+        if ($baseDir) {
+            $subPath = str_replace('\\', DIRECTORY_SEPARATOR, $this->getNamespace());
+            $filePath = $baseDir . $subPath . DIRECTORY_SEPARATOR . $this->getClassName() . '.php';
+        } else {
+            $filePath = $this->reflectionClass->getFileName();
+        }
         return str_replace(
             array('\\Entity\\',         '/Entity/',         $this->getClassName()),
             array('\\Tests\\Entity\\',  '/Tests/Entity/',   $this->getTestClassName()),
-            $this->reflectionClass->getFileName()
+            $filePath
         );
     }
 
