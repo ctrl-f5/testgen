@@ -1,19 +1,27 @@
+#! /usr/bin/env php
 <?php
 
 /** @var Composer\Autoload\ClassLoader $autoloader */
 $autoloader = require_once "vendor/autoload.php";
 
+$cwd = getcwd();
+$localConfig = array();
+foreach (scandir($cwd) as $node) {
+    if ($node == 'testgen.conf.php') {
+        $localConfig = realpath($cwd . DIRECTORY_SEPARATOR . $node);
+        $localConfig = include_once $localConfig;
+        break;
+    }
+}
+
 $defaultConfig = include_once "config/config.defaults.php";
 $userConfig = include_once "config/config.local.php";
-$config = array_merge($defaultConfig, $userConfig);
+$config = array_merge($defaultConfig, $userConfig, $localConfig);
 
-foreach ($config['autoloaders'] as $loader) {
-    var_dump($loader);
-    require_once $loader;
-}
+foreach ($config['autoloaders'] as $loader) require_once $loader;
 foreach ($config['namespaceloader'] as $namespace => $path) $autoloader->addPsr4($namespace, $path);
 
-$argument = isset($argv[1]) ? $argv[1]: '';
+$argument = isset($argv[1]) ? $argv[1]: '.';
 $flag = isset($argv[2]) ? $argv[2]: 0;
 
 if ($flag == '--dump') {
