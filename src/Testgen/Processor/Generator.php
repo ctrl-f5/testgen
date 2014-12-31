@@ -135,7 +135,7 @@ class Generator
             if (strpos($fqcn, $ns) === 0) return $class;
         }
 
-        return $this->config['baseClasses'][''];
+        return $this->config['baseClasses']['\\'];
     }
 
     protected function writeFile($path, $content)

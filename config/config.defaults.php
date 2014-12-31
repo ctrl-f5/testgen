@@ -3,7 +3,8 @@
 $root = __DIR__ . '/../';
 
 return array(
-    'autoload' => array(),
+    'autoloaders' => array(),
+    'namespaceloader' => array(),
     'templates' => array(
         'class' => $root . 'tmpl/class.tmpl',
         'method' => array(

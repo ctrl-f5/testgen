@@ -7,7 +7,11 @@ $defaultConfig = include_once "config/config.defaults.php";
 $userConfig = include_once "config/config.local.php";
 $config = array_merge($defaultConfig, $userConfig);
 
-foreach ($config['autoload'] as $namespace => $path) $autoloader->addPsr4($namespace, $path);
+foreach ($config['autoloaders'] as $loader) {
+    var_dump($loader);
+    require_once $loader;
+}
+foreach ($config['namespaceloader'] as $namespace => $path) $autoloader->addPsr4($namespace, $path);
 
 $argument = isset($argv[1]) ? $argv[1]: '';
 $flag = isset($argv[2]) ? $argv[2]: 0;
