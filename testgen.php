@@ -1,8 +1,10 @@
 #! /usr/bin/env php
 <?php
 
+$srcDir = __DIR__ . DIRECTORY_SEPARATOR;
+
 /** @var Composer\Autoload\ClassLoader $autoloader */
-$autoloader = require_once "vendor/autoload.php";
+$autoloader = require_once $srcDir . "vendor/autoload.php";
 
 $cwd = getcwd();
 $localConfig = array();
@@ -14,8 +16,8 @@ foreach (scandir($cwd) as $node) {
     }
 }
 
-$defaultConfig = include_once "config/config.defaults.php";
-$userConfig = include_once "config/config.local.php";
+$defaultConfig = include_once $srcDir . "config/config.defaults.php";
+$userConfig = include_once $srcDir . "config/config.local.php";
 $config = array_merge($defaultConfig, $userConfig, $localConfig);
 
 foreach ($config['autoloaders'] as $loader) require_once $loader;
